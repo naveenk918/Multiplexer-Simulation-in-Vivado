@@ -117,41 +117,29 @@ Output : ![image](https://github.com/user-attachments/assets/579d6afc-a8ed-4e4f-
 
 4:1 MUX Structural Implementation
 
-// mux2_to_1.v
-module mux2_to_1 (
-    input wire A,
-    input wire B,
-    input wire S,
-    output wire Y
+module mux4_1 (
+    input wire a, b, c, d,  
+    input wire s0, s1,     
+    output wire y           
 );
-    assign Y = S ? B : A;
+  wire n_s0, n_s1; 
+  wire and0, and1, and2, and3; 
+  not (n_s0, s0);
+  not (n_s1, s1);
+  and (and0, a, n_s1, n_s0);  
+  and (and1, b, n_s1, s0);  
+  and (and2, c, s1, n_s0);    
+  and (and3, d, s1, s0);
+  or (y, and0, and1, and2, and3);
 endmodule
 
+Output : ![image](https://github.com/user-attachments/assets/48fc66b2-3dfb-4702-b917-01665921fad5)
 
-// mux4_to_1_structural.v
-module mux4_to_1_structural (
-    input wire A,
-    input wire B,
-    input wire C,
-    input wire D,
-    input wire S0,
-    input wire S1,
-    output wire Y
-);
-    wire mux_low, mux_high;
 
-    // Instantiate two 2:1 MUXes
-    mux2_to_1 mux0 (.A(A), .B(B), .S(S0), .Y(mux_low));
-    mux2_to_1 mux1 (.A(C), .B(D), .S(S0), .Y(mux_high));
-
-    // Instantiate the final 2:1 MUX
-    mux2_to_1 mux_final (.A(mux_low), .B(mux_high), .S(S1), .Y(Y));
-endmodule
 
 Testbench Implementation
 
-// mux4_to_1_tb.v
-`timescale 1ns / 1ps
+`timescale 2ps / 1ps
 
 module mux4_to_1_tb;
     // Inputs
@@ -169,47 +157,47 @@ module mux4_to_1_tb;
     wire Y_structural;
 
     // Instantiate the Gate-Level MUX
-    mux4_to_1_gate uut_gate (
-        .A(A),
-        .B(B),
-        .C(C),
-        .D(D),
-        .S0(S0),
-        .S1(S1),
-        .Y(Y_gate)
+    multiplexer uut_gate (
+        .s1(S1),
+        .s0(S0),
+        .a(A),
+        .b(B),
+        .c(C),
+        .d(D),
+        .y(Y_gate)
     );
 
     // Instantiate the Data Flow MUX
-    mux4_to_1_dataflow uut_dataflow (
-        .A(A),
-        .B(B),
-        .C(C),
-        .D(D),
-        .S0(S0),
-        .S1(S1),
-        .Y(Y_dataflow)
+    mux4_1 uut_dataflow (
+        .a(A),
+        .b(B),
+        .c(C),
+        .d(D),
+        .s0(S0),
+        .s1(S1),
+        .y(Y_dataflow)
     );
 
     // Instantiate the Behavioral MUX
-    mux4_to_1_behavioral uut_behavioral (
-        .A(A),
-        .B(B),
-        .C(C),
-        .D(D),
-        .S0(S0),
-        .S1(S1),
-        .Y(Y_behavioral)
+    mux_4to1 uut_behavioral (
+        .s0(S0),
+        .s1(S1),
+        .a(A),
+        .b(B),
+        .c(C),
+        .d(D),
+        .y(Y_behavioral)
     );
 
     // Instantiate the Structural MUX
-    mux4_to_1_structural uut_structural (
-        .A(A),
-        .B(B),
-        .C(C),
-        .D(D),
-        .S0(S0),
-        .S1(S1),
-        .Y(Y_structural)
+    mux4_1 uut_structural (
+        .a(A),
+        .b(B),
+        .c(C),
+        .d(D),
+        .s0(S0),
+        .s1(S1),
+        .y(Y_structural)
     );
 
     // Test vectors
@@ -236,6 +224,7 @@ module mux4_to_1_tb;
                  $time, S1, S0, A, B, C, D, Y_gate, Y_dataflow, Y_behavioral, Y_structural);
     end
 endmodule
+
 
 
 Sample Output
