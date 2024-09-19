@@ -75,23 +75,25 @@ and g4(w[3],s1,s0,d);
 or g5(y,w[0],w[1],w[2],w[3]);
 endmodule
 
+Output : ![image](https://github.com/user-attachments/assets/1ae77f3b-2100-4685-9654-6cc57bf2d6de)
+
+
 4:1 MUX Data Flow Implementation
 
-// mux4_to_1_dataflow.v
-module mux4_to_1_dataflow (
-    input wire A,
-    input wire B,
-    input wire C,
-    input wire D,
-    input wire S0,
-    input wire S1,
-    output wire Y
+module mux4_1 (
+    input wire a, b, c, d,
+    input wire s0, s1,
+    output wire y
 );
-    assign Y = (~S1 & ~S0 & A) |
-               (~S1 & S0 & B) |
-               (S1 & ~S0 & C) |
-               (S1 & S0 & D);
+
+assign y = (s0 == 0 && s1 == 0) ? a :
+           (s0 == 0 && s1 == 1) ? b :
+           (s0 == 1 && s1 == 0) ? c :
+           d;
+           
 endmodule
+
+Output : ![image](https://github.com/user-attachments/assets/a692b041-21e0-491f-bff8-50adf3654285)
 
 4:1 MUX Behavioral Implementation
 
