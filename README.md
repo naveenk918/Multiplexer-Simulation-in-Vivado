@@ -139,92 +139,79 @@ Output : ![image](https://github.com/user-attachments/assets/48fc66b2-3dfb-4702-
 
 Testbench Implementation
 
-`timescale 2ps / 1ps
+// Outputs
+wire Y_gate;
+wire Y_dataflow;
+wire Y_behavioral;
+wire Y_structural;
 
-module mux4_to_1_tb;
-    // Inputs
-    reg A;
-    reg B;
-    reg C;
-    reg D;
-    reg S0;
-    reg S1;
+// Instantiate the Gate-Level MUX
+mux4_to_1_gate uut_gate (
+    .A(A),
+    .B(B),
+    .C(C),
+    .D(D),
+    .S0(S0),
+    .S1(S1),
+    .Y(Y_gate)
+);
 
-    // Outputs
-    wire Y_gate;
-    wire Y_dataflow;
-    wire Y_behavioral;
-    wire Y_structural;
+// Instantiate the Data Flow MUX
+mux4_to_1_dataflow uut_dataflow (
+    .A(A),
+    .B(B),
+    .C(C),
+    .D(D),
+    .S0(S0),
+    .S1(S1),
+    .Y(Y_dataflow)
+);
 
-    // Instantiate the Gate-Level MUX
-    multiplexer uut_gate (
-        .s1(S1),
-        .s0(S0),
-        .a(A),
-        .b(B),
-        .c(C),
-        .d(D),
-        .y(Y_gate)
-    );
+// Instantiate the Behavioral MUX
+mux4_to_1_behavioral uut_behavioral (
+    .A(A),
+    .B(B),
+    .C(C),
+    .D(D),
+    .S0(S0),
+    .S1(S1),
+    .Y(Y_behavioral)
+);
 
-    // Instantiate the Data Flow MUX
-    mux4_1 uut_dataflow (
-        .a(A),
-        .b(B),
-        .c(C),
-        .d(D),
-        .s0(S0),
-        .s1(S1),
-        .y(Y_dataflow)
-    );
+// Instantiate the Structural MUX
+mux4_to_1_structural uut_structural (
+    .A(A),
+    .B(B),
+    .C(C),
+    .D(D),
+    .S0(S0),
+    .S1(S1),
+    .Y(Y_structural)
+);
 
-    // Instantiate the Behavioral MUX
-    mux_4to1 uut_behavioral (
-        .s0(S0),
-        .s1(S1),
-        .a(A),
-        .b(B),
-        .c(C),
-        .d(D),
-        .y(Y_behavioral)
-    );
+// Test vectors
+initial begin
+    // Initialize Inputs
+    A = 0; B = 0; C = 0; D = 0; S0 = 0; S1 = 0;
 
-    // Instantiate the Structural MUX
-    mux4_1 uut_structural (
-        .a(A),
-        .b(B),
-        .c(C),
-        .d(D),
-        .s0(S0),
-        .s1(S1),
-        .y(Y_structural)
-    );
+    // Apply test cases
+    #10 {S1, S0, A, B, C, D} = 6'b00_0000; // Y = A = 0
+    #10 {S1, S0, A, B, C, D} = 6'b00_0001; // Y = A = 1
+    #10 {S1, S0, A, B, C, D} = 6'b01_0010; // Y = B = 1
+    #10 {S1, S0, A, B, C, D} = 6'b10_0100; // Y = C = 1
+    #10 {S1, S0, A, B, C, D} = 6'b11_1000; // Y = D = 1
+    #10 {S1, S0, A, B, C, D} = 6'b01_1100; // Y = B = 1
+    #10 {S1, S0, A, B, C, D} = 6'b10_1010; // Y = C = 1
+    #10 {S1, S0, A, B, C, D} = 6'b11_0110; // Y = D = 1
+    #10 {S1, S0, A, B, C, D} = 6'b00_1111; // Y = A = 1
+    #10 $stop;
+end
 
-    // Test vectors
-    initial begin
-        // Initialize Inputs
-        A = 0; B = 0; C = 0; D = 0; S0 = 0; S1 = 0;
-
-        // Apply test cases
-        #10 {S1, S0, A, B, C, D} = 6'b00_0000; // Y = A = 0
-        #10 {S1, S0, A, B, C, D} = 6'b00_0001; // Y = A = 1
-        #10 {S1, S0, A, B, C, D} = 6'b01_0010; // Y = B = 1
-        #10 {S1, S0, A, B, C, D} = 6'b10_0100; // Y = C = 1
-        #10 {S1, S0, A, B, C, D} = 6'b11_1000; // Y = D = 1
-        #10 {S1, S0, A, B, C, D} = 6'b01_1100; // Y = B = 1
-        #10 {S1, S0, A, B, C, D} = 6'b10_1010; // Y = C = 1
-        #10 {S1, S0, A, B, C, D} = 6'b11_0110; // Y = D = 1
-        #10 {S1, S0, A, B, C, D} = 6'b00_1111; // Y = A = 1
-        #10 $stop;
-    end
-
-    // Monitor the outputs
-    initial begin
-        $monitor("Time=%0t | S1=%b S0=%b | Inputs: A=%b B=%b C=%b D=%b | Y_gate=%b | Y_dataflow=%b | Y_behavioral=%b | Y_structural=%b",
-                 $time, S1, S0, A, B, C, D, Y_gate, Y_dataflow, Y_behavioral, Y_structural);
-    end
-endmodule
-
+// Monitor the outputs
+initial begin
+    $monitor("Time=%0t | S1=%b S0=%b | Inputs: A=%b B=%b C=%b D=%b | Y_gate=%b | Y_dataflow=%b | Y_behavioral=%b | Y_structural=%b",
+             $time, S1, S0, A, B, C, D, Y_gate, Y_dataflow, Y_behavioral, Y_structural);
+end
 
 
 Sample Output
