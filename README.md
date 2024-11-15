@@ -1,11 +1,11 @@
-SIMULATION AND IMPLEMENTATION OF LOGIC GATES
-AIM:
+## SIMULATION AND IMPLEMENTATION OF LOGIC GATES
+# AIM:
 To design and simulate a 4:1 Multiplexer (MUX) using Verilog HDL in four different modeling styles—Gate-Level, Data Flow, Behavioral, and Structural—and to verify its functionality through a testbench using the Vivado 2023.1 simulation environment. The experiment aims to understand how different abstraction levels in Verilog can be used to describe the same digital logic circuit and analyze their performance.
 
-APPARATUS REQUIRED:
+# APPARATUS REQUIRED:
 Vivado 2023.1
 
-Procedure
+# Procedure
 1. Launch Vivado
 Open Vivado 2023.1 by double-clicking the Vivado icon or searching for it in the Start menu.
 2. Create a New Project
@@ -51,19 +51,19 @@ You can include the timing diagram from the simulation window showing the correc
 10. Close the Simulation
 Once done, close the simulation by going to Simulation → "Close Simulation".
 
-Logic Diagram
+# Logic Diagram
 
 ![image](https://github.com/user-attachments/assets/d4ab4bc3-12b0-44dc-8edb-9d586d8ba856)
 
-Truth Table
+# Truth Table
 
 ![image](https://github.com/user-attachments/assets/c850506c-3f6e-4d6b-8574-939a914b2a5f)
 
-Verilog Code
+# Verilog Code
 
 4:1 MUX Gate-Level Implementation
 
-
+```
 module multiplexer(s1,s0,a,b,c,d,y);
 input s1,s0,a,b,c,d;
 output y;
@@ -74,12 +74,13 @@ and g3(w[2],s1,~s0,c);
 and g4(w[3],s1,s0,d);
 or g5(y,w[0],w[1],w[2],w[3]);
 endmodule
-
-Output : ![image](https://github.com/user-attachments/assets/1ae77f3b-2100-4685-9654-6cc57bf2d6de)
+```
+# Output : 
+![image](https://github.com/user-attachments/assets/1ae77f3b-2100-4685-9654-6cc57bf2d6de)
 
 
 4:1 MUX Data Flow Implementation
-
+```
 module mux4_1 (
     input wire a, b, c, d,
     input wire s0, s1,
@@ -92,11 +93,12 @@ assign y = (s0 == 0 && s1 == 0) ? a :
            d;
            
 endmodule
-
-Output : ![image](https://github.com/user-attachments/assets/a692b041-21e0-491f-bff8-50adf3654285)
+```
+# Output : 
+![image](https://github.com/user-attachments/assets/a692b041-21e0-491f-bff8-50adf3654285)
 
 4:1 MUX Behavioral Implementation
-
+```
 module mux_4to1 ( input s0, s1, 
 input a, b, c, d,
 output reg y);
@@ -110,13 +112,14 @@ output reg y);
     endcase
   end
 endmodule
-
-Output : ![image](https://github.com/user-attachments/assets/579d6afc-a8ed-4e4f-bd03-ab7e6d38fd20)
+```
+# Output :
+![image](https://github.com/user-attachments/assets/579d6afc-a8ed-4e4f-bd03-ab7e6d38fd20)
 
 
 
 4:1 MUX Structural Implementation
-
+```
 module mux4_1 (
     input wire a, b, c, d,  
     input wire s0, s1,     
@@ -132,13 +135,14 @@ module mux4_1 (
   and (and3, d, s1, s0);
   or (y, and0, and1, and2, and3);
 endmodule
+```
+# Output :
+![image](https://github.com/user-attachments/assets/48fc66b2-3dfb-4702-b917-01665921fad5)
 
-Output : ![image](https://github.com/user-attachments/assets/48fc66b2-3dfb-4702-b917-01665921fad5)
 
 
-
-Testbench Implementation
-
+# Testbench Implementation
+```
 // Outputs
 wire Y_gate;
 wire Y_dataflow;
@@ -212,9 +216,9 @@ initial begin
     $monitor("Time=%0t | S1=%b S0=%b | Inputs: A=%b B=%b C=%b D=%b | Y_gate=%b | Y_dataflow=%b | Y_behavioral=%b | Y_structural=%b",
              $time, S1, S0, A, B, C, D, Y_gate, Y_dataflow, Y_behavioral, Y_structural);
 end
+```
 
-
-Sample Output
+# Sample Output
 
 Time=0 | S1=0 S0=0 | Inputs: A=0 B=0 C=0 D=0 | Y_gate=0 | Y_dataflow=0 | Y_behavioral=0 | Y_structural=0
 Time=10 | S1=0 S0=0 | Inputs: A=0 B=0 C=0 D=0 | Y_gate=0 | Y_dataflow=0 | Y_behavioral=0 | Y_structural=0
@@ -223,7 +227,7 @@ Time=30 | S1=0 S0=1 | Inputs: A=0 B=0 C=0 D=1 | Y_gate=0 | Y_dataflow=0 | Y_beha
 Time=40 | S1=1 S0=0 | Inputs: A=0 B=0 C=0 D=1 | Y_gate=0 | Y_dataflow=0 | Y_behavioral=0 | Y_structural=0
 ...
 
-Conclusion:
+# Conclusion:
 
 In this experiment, a 4:1 Multiplexer was successfully designed and simulated using Verilog HDL across four different modeling styles: Gate-Level, Data Flow, Behavioral, and Structural. The simulation results verified the correct functionality of the MUX, with all implementations producing identical outputs for the given input conditions.
 
